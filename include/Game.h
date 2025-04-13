@@ -1,18 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Snake.h"
-#include "Food.h"
+
+// Выносим константы в глобальную область видимости
+constexpr int WIDTH = 800;
+constexpr int HEIGHT = 600;
+constexpr int GRID_SIZE = 20;
+constexpr int GRID_WIDTH = WIDTH / GRID_SIZE;
+constexpr int GRID_HEIGHT = HEIGHT / GRID_SIZE;
 
 class Game {
-    static const int WIDTH = 800;
-    static const int HEIGHT = 600;
-    static const int GRID_SIZE = 20;
-    static const int GRID_WIDTH = WIDTH / GRID_SIZE;
-    static const int GRID_HEIGHT = HEIGHT / GRID_SIZE;
-    
     sf::RenderWindow window;
-    Snake snake;
-    Food food;
     
     void processInput();
     void update();
