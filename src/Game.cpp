@@ -37,11 +37,16 @@ void Game::processInput() {
 void Game::update() {
     snake.move();
     
+    // Проверяем съедание еды
     if (snake.segments[0].x == food.x && snake.segments[0].y == food.y) {
-        snake.grow();
-        food.respawn();
+        snake.grow();       // Сначала увеличиваем змейку
+        food.respawn();     // Затем перемещаем еду
+        
+        // Пропускаем проверку столкновений в этом кадре
+        return;
     }
     
+    // Проверяем столкновения только если не было поедания еды
     if (snake.checkCollision()) {
         window.close();
     }
