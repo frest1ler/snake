@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Direction.h"
 #include <SFML/Graphics.hpp>
 
 Game::Game() : window(sf::VideoMode(WIDTH, HEIGHT), "Змейка") {
