@@ -44,7 +44,6 @@
 mkdir build && cd build
 cmake ..
 make
-./SnakeGame# snake
 
 ### Управление
 - Клавиша	Действие
