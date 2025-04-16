@@ -41,7 +41,6 @@
 - SFML 2.6+
 
 ### Сборка и запуск
-```bash
 mkdir build && cd build
 cmake ..
 make
