@@ -13,12 +13,16 @@ constexpr int GRID_HEIGHT = HEIGHT / GRID_SIZE;
 
 class Game {
     sf::RenderWindow window;
-    Snake snake;    // Добавляем змейку как член класса
-    Food food;      // Добавляем еду как член класса
+    Snake snake;
+    Food food;
+    float baseDelay = 0.1f;  // Базовая задержка
+    float currentDelay;       // Текущая задержка
+    int score = 0;            // Счет
     
     void processInput();
     void update();
     void render();
+    void drawScore();
     
 public:
     Game();
