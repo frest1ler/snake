@@ -1,7 +1,8 @@
 #include "Game.h"
+#include <sstream>
 
-Game::Game() : window(sf::VideoMode(WIDTH, HEIGHT), "Змейка") {
-    window.setFramerateLimit(10);
+Game::Game() : window(sf::VideoMode(WIDTH, HEIGHT), "Змейка"), currentDelay(baseDelay) {
+    window.setFramerateLimit(60);
 }
 
 void Game::processInput() {
@@ -39,17 +40,47 @@ void Game::update() {
     
     // Проверяем съедание еды
     if (snake.segments[0].x == food.x && snake.segments[0].y == food.y) {
-        snake.grow();       // Сначала увеличиваем змейку
-        food.respawn();     // Затем перемещаем еду
-        
-        // Пропускаем проверку столкновений в этом кадре
+        if (food.type == FoodType::Normal) {
+            snake.grow();
+            score += 10;
+            // Увеличиваем скорость (уменьшаем задержку)
+            currentDelay = std::max(0.05f, currentDelay * 0.95f);
+        } else {
+            // Специальная еда дает больше очков и увеличивает змейку на 2 сегмента
+            snake.grow();
+            snake.grow();
+            score += 30;
+            currentDelay = std::max(0.05f, currentDelay * 0.9f);
+        }
+        food.respawn();
         return;
     }
     
-    // Проверяем столкновения только если не было поедания еды
     if (snake.checkCollision()) {
         window.close();
     }
+}
+
+void Game::drawScore() {
+    sf::Font font;
+    if (!font.loadFromFile("arial.ttf")) {
+        // Простой fallback, если шрифт не загрузился
+        sf::Text text;
+        text.setString("Score: " + std::to_string(score));
+        text.setCharacterSize(24);
+        text.setFillColor(sf::Color::White);
+        text.setPosition(10, 10);
+        window.draw(text);
+        return;
+    }
+    
+    sf::Text text;
+    text.setFont(font);
+    text.setString("Score: " + std::to_string(score));
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(10, 10);
+    window.draw(text);
 }
 
 void Game::render() {
@@ -57,7 +88,7 @@ void Game::render() {
     
     // Рисуем еду
     sf::RectangleShape foodShape(sf::Vector2f(GRID_SIZE, GRID_SIZE));
-    foodShape.setFillColor(sf::Color::Red);
+    foodShape.setFillColor(food.type == FoodType::Normal ? sf::Color::Red : sf::Color::Blue);
     foodShape.setPosition(food.x * GRID_SIZE, food.y * GRID_SIZE);
     window.draw(foodShape);
     
@@ -69,13 +100,13 @@ void Game::render() {
         window.draw(segmentShape);
     }
     
+    drawScore();
     window.display();
 }
 
 void Game::run() {
     sf::Clock clock;
     float timer = 0;
-    float delay = 0.1f;
     
     while (window.isOpen()) {
         float time = clock.restart().asSeconds();
@@ -83,7 +114,7 @@ void Game::run() {
         
         processInput();
         
-        if (timer > delay) {
+        if (timer > currentDelay) {
             timer = 0;
             update();
         }
