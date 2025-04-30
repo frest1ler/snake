@@ -15,12 +15,8 @@ endif()
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 
 # Исполняемый файл
-add_executable(SnakeGame
-    src/main.cpp
-    src/Game.cpp
-    src/Snake.cpp
-    src/Food.cpp
-)
+file(GLOB SOURCES "src/*.cpp")
+add_executable(SnakeGame ${SOURCES})
 
 # Подключение заголовков
 target_include_directories(SnakeGame PRIVATE include)
